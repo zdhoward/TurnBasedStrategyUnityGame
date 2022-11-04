@@ -9,7 +9,6 @@ public class BulletProjectile : MonoBehaviour
 
     private float moveSpeed = 200f;
     private Vector3 targetPosition;
-    private float stoppingDistance = .1f;
 
     public void Setup(Vector3 targetPosition)
     {

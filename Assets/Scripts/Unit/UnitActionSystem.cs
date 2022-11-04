@@ -64,7 +64,7 @@ public class UnitActionSystem : MonoBehaviour
             if (!selectedAction.IsValidActionGridPosition(mouseGridPosition))
                 return;
 
-            if (!selectedUnit.TrySpendActionPoints(selectedAction))
+            if (!selectedUnit.TrySpendActionPointsToTakeAction(selectedAction))
                 return;
 
             SetBusy();

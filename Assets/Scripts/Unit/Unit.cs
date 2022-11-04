@@ -9,10 +9,13 @@ public class Unit : MonoBehaviour
     [SerializeField] private bool isEnemy;
 
     public static event EventHandler OnAnyActionPointsChange;
+    public static event EventHandler OnAnyUnitSpawned;
+    public static event EventHandler OnAnyUnitDied;
 
     private GridPosition gridPosition;
     private HealthSystem healthSystem;
     private MoveAction moveAction;
+    private ShootAction shootAction;
     private SpinAction spinAction;
     private BaseAction[] baseActionArray;
 
@@ -22,6 +25,7 @@ public class Unit : MonoBehaviour
     {
         healthSystem = GetComponent<HealthSystem>();
         moveAction = GetComponent<MoveAction>();
+        shootAction = GetComponent<ShootAction>();
         spinAction = GetComponent<SpinAction>();
         baseActionArray = GetComponents<BaseAction>();
 
@@ -35,6 +39,8 @@ public class Unit : MonoBehaviour
 
         TurnSystem.Instance.OnTurnChange += TurnSystem_OnTurnChange;
         healthSystem.OnDeath += HealthSystem_OnDeath;
+
+        OnAnyUnitSpawned?.Invoke(this, EventArgs.Empty);
     }
 
     private void Update()
@@ -52,6 +58,11 @@ public class Unit : MonoBehaviour
     public MoveAction GetMoveAction()
     {
         return moveAction;
+    }
+
+    public ShootAction GetShootAction()
+    {
+        return shootAction;
     }
 
     public SpinAction GetSpinAction()
@@ -74,7 +85,7 @@ public class Unit : MonoBehaviour
         return baseActionArray;
     }
 
-    public bool TrySpendActionPoints(BaseAction baseAction)
+    public bool TrySpendActionPointsToTakeAction(BaseAction baseAction)
     {
         if (CanSpendActionPointsToTakeAction(baseAction))
         {
@@ -85,7 +96,7 @@ public class Unit : MonoBehaviour
         return false;
     }
 
-    private bool CanSpendActionPointsToTakeAction(BaseAction baseAction)
+    public bool CanSpendActionPointsToTakeAction(BaseAction baseAction)
     {
         return baseAction.GetActionPointsCost() <= actionPoints;
     }
@@ -114,7 +125,10 @@ public class Unit : MonoBehaviour
     private void HealthSystem_OnDeath(object sender, EventArgs e)
     {
         LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
+
         Destroy(gameObject);
+
+        OnAnyUnitDied?.Invoke(this, EventArgs.Empty);
     }
 
     public bool IsEnemy()
@@ -125,5 +139,10 @@ public class Unit : MonoBehaviour
     public void Damage(int damageAmount)
     {
         healthSystem.Damage(damageAmount);
+    }
+
+    public float GetHealthNormalized()
+    {
+        return healthSystem.GetHealthNormalized();
     }
 }
