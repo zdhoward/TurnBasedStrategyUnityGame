@@ -6,19 +6,22 @@ using UnityEngine;
 [RequireComponent(typeof(Unit))]
 public class MoveAction : BaseAction
 {
+    public event EventHandler OnStartMoving;
+    public event EventHandler OnStopMoving;
+
     [SerializeField] private float stoppingDistance = 0.05f;
     [SerializeField] private float moveSpeed = 4f;
     [SerializeField] private float turnSpeed = 10f;
 
     [SerializeField] private int maxMoveDistance = 4;
 
-    private Animator animator;
+    private UnitAnimator unitAnimator;
     private Vector3 targetPosition;
 
     protected override void Awake()
     {
         base.Awake();
-        animator = GetComponentInChildren<Animator>();
+        unitAnimator = GetComponentInChildren<UnitAnimator>();
         targetPosition = transform.position;
     }
 
@@ -32,9 +35,10 @@ public class MoveAction : BaseAction
 
     public override void TakeAction(GridPosition gridPosition, Action onActionComplete)
     {
-        this.onActionComplete = onActionComplete;
         this.targetPosition = LevelGrid.Instance.GetWorldPosition(gridPosition);
-        isActive = true;
+        ActionStart(onActionComplete);
+
+        OnStartMoving?.Invoke(this, EventArgs.Empty);
     }
 
     private void MoveUpdate()
@@ -45,14 +49,11 @@ public class MoveAction : BaseAction
         if (Vector3.Distance(targetPosition, transform.position) > stoppingDistance)
         {
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
-
-            animator.SetBool("isWalking", true);
         }
         else
         {
-            animator.SetBool("isWalking", false);
-            isActive = false;
-            onActionComplete();
+            OnStopMoving?.Invoke(this, EventArgs.Empty);
+            ActionComplete();
         }
 
         // Rotation
@@ -65,9 +66,9 @@ public class MoveAction : BaseAction
 
         GridPosition unitGridPosition = unit.GetGridPosition();
 
-        for (int x = -maxMoveDistance; x < maxMoveDistance; x++)
+        for (int x = -maxMoveDistance; x <= maxMoveDistance; x++)
         {
-            for (int z = -maxMoveDistance; z < maxMoveDistance; z++)
+            for (int z = -maxMoveDistance; z <= maxMoveDistance; z++)
             {
                 GridPosition offsetGridPosition = new GridPosition(x, z);
                 GridPosition testGridPosition = unitGridPosition + offsetGridPosition;
@@ -92,5 +93,10 @@ public class MoveAction : BaseAction
     public override string GetActionName()
     {
         return "Move";
+    }
+
+    public float GetTurnSpeed()
+    {
+        return turnSpeed;
     }
 }

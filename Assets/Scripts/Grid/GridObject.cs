@@ -46,4 +46,12 @@ public class GridObject
 
         return gridPosition.ToString() + unitstring;
     }
+
+    public Unit GetUnit()
+    {
+        if (HasAnyUnit())
+            return unitList[0];
+
+        return null;
+    }
 }

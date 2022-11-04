@@ -6,10 +6,12 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     [SerializeField] private int maxActionPoints = 2;
+    [SerializeField] private bool isEnemy;
 
     public static event EventHandler OnAnyActionPointsChange;
 
     private GridPosition gridPosition;
+    private HealthSystem healthSystem;
     private MoveAction moveAction;
     private SpinAction spinAction;
     private BaseAction[] baseActionArray;
@@ -18,19 +20,21 @@ public class Unit : MonoBehaviour
 
     private void Awake()
     {
+        healthSystem = GetComponent<HealthSystem>();
         moveAction = GetComponent<MoveAction>();
         spinAction = GetComponent<SpinAction>();
         baseActionArray = GetComponents<BaseAction>();
 
         actionPoints = maxActionPoints;
-
-        TurnSystem.Instance.OnTurnChange += TurnSystem_OnTurnChange;
     }
 
     private void Start()
     {
         gridPosition = LevelGrid.Instance.GetGridPosition(transform.position);
         LevelGrid.Instance.AddUnitAtGridPosition(gridPosition, this);
+
+        TurnSystem.Instance.OnTurnChange += TurnSystem_OnTurnChange;
+        healthSystem.OnDeath += HealthSystem_OnDeath;
     }
 
     private void Update()
@@ -56,6 +60,11 @@ public class Unit : MonoBehaviour
     public GridPosition GetGridPosition()
     {
         return gridPosition;
+    }
+
+    public Vector3 GetWorldPosition()
+    {
+        return transform.position;
     }
 
     public BaseAction[] GetBaseActionArray()
@@ -92,7 +101,27 @@ public class Unit : MonoBehaviour
 
     private void TurnSystem_OnTurnChange(object sender, EventArgs e)
     {
-        actionPoints = maxActionPoints;
-        OnAnyActionPointsChange?.Invoke(this, EventArgs.Empty);
+        if ((IsEnemy() && !TurnSystem.Instance.IsPlayerTurn()) ||
+        (!IsEnemy() && TurnSystem.Instance.IsPlayerTurn()))
+        {
+            actionPoints = maxActionPoints;
+            OnAnyActionPointsChange?.Invoke(this, EventArgs.Empty);
+        }
+    }
+
+    private void HealthSystem_OnDeath(object sender, EventArgs e)
+    {
+        LevelGrid.Instance.RemoveUnitAtGridPosition(gridPosition, this);
+        Destroy(gameObject);
+    }
+
+    public bool IsEnemy()
+    {
+        return isEnemy;
+    }
+
+    public void Damage(int damageAmount)
+    {
+        healthSystem.Damage(damageAmount);
     }
 }
