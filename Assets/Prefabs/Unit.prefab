@@ -278,6 +278,9 @@ MonoBehaviour:
   aimingStateTime: 1
   shootingStateTime: 0.1
   cooloffStateTime: 0.5
+  obstaclesLayerMask:
+    serializedVersion: 2
+    m_Bits: 512
 --- !u!114 &-351173591261840850
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -27,6 +27,8 @@ public class ShootAction : BaseAction
     [SerializeField] private float shootingStateTime = .1f;
     [SerializeField] private float cooloffStateTime = .5f;
 
+    [SerializeField] private LayerMask obstaclesLayerMask;
+
     private State state;
     private float stateTimer;
 
@@ -45,7 +47,7 @@ public class ShootAction : BaseAction
         {
             case State.Aiming:
                 if (transform.forward != targetDirection)
-                    transform.forward = Vector3.Lerp(transform.forward, targetDirection, unit.GetMoveAction().GetTurnSpeed() * Time.deltaTime);
+                    transform.forward = Vector3.Lerp(transform.forward, targetDirection, unit.GetAction<MoveAction>().GetTurnSpeed() * Time.deltaTime);
                 break;
             case State.Shooting:
                 if (canShootBullet)
@@ -139,6 +141,15 @@ public class ShootAction : BaseAction
                 Unit targetUnit = LevelGrid.Instance.GetUnitAtGridPosition(testGridPosition);
 
                 if (targetUnit.IsEnemy() == unit.IsEnemy())
+                    continue;
+
+                Vector3 unitWorldPosition = LevelGrid.Instance.GetWorldPosition(unitGridPosition);
+                float unitShoulderHeight = 1.7f;
+                Vector3 shootDirection = (targetUnit.GetWorldPosition() - unitWorldPosition).normalized;
+                if (Physics.Raycast(unitWorldPosition + Vector3.up * unitShoulderHeight,
+                    shootDirection,
+                    Vector3.Distance(unitWorldPosition, targetUnit.GetWorldPosition()),
+                    obstaclesLayerMask))
                     continue;
 
                 validGridPositionList.Add(testGridPosition);
