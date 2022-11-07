@@ -11,7 +11,8 @@ public class UnitRagdoll : MonoBehaviour
         MatchAllChildTransforms(originalRootBone, ragdollRootBone);
 
         // TODO transform.position is not directional. Should redo this with projectile direction
-        ApplyExplosionToRagdoll(ragdollRootBone, 300f, transform.position, 10f);
+        Vector3 randomDir = new Vector3(Random.Range(-1f, 1f), 0f, Random.Range(-1f, 1f));
+        ApplyExplosionToRagdoll(ragdollRootBone, 300f, transform.position + randomDir, 10f);
     }
 
     private void MatchAllChildTransforms(Transform root, Transform clone)
