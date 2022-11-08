@@ -120,6 +120,10 @@ public class Unit : MonoBehaviour
 
         Destroy(gameObject);
 
+        GridSystemVisual.Instance.UpdateGridVisual();
+        if (UnitActionSystem.Instance.GetSelectedUnit() == this)
+            UnitActionSystem.Instance.ClearSelectedUnit();
+
         OnAnyUnitDied?.Invoke(this, EventArgs.Empty);
     }
 

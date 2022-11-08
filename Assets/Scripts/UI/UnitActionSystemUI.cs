@@ -52,6 +52,16 @@ public class UnitActionSystemUI : MonoBehaviour
 
     private void UnityActionSystem_OnSelectedUnitChange(object sender, EventArgs e)
     {
+        if (UnitActionSystem.Instance.GetSelectedUnit() == null)
+        {
+            //actionButtonContainerTransform.gameObject.SetActive(false);
+            gameObject.SetActive(false);
+            //GridSystemVisual.Instance.HideAllGridPositions();
+            return;
+        }
+
+        //actionButtonContainerTransform.gameObject.SetActive(true);
+        gameObject.SetActive(true);
         CreateUnitActionButtons();
         UpdateSelectedVisual();
         UpdateActionPoints();
@@ -88,6 +98,7 @@ public class UnitActionSystemUI : MonoBehaviour
     private void UpdateActionPoints()
     {
         Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
-        actionPointsText.text = "Action Points: " + selectedUnit.GetActionPoints();
+        if (selectedUnit != null)
+            actionPointsText.text = "Action Points: " + selectedUnit.GetActionPoints();
     }
 }

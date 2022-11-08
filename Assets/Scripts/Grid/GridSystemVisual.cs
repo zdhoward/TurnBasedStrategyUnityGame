@@ -125,6 +125,9 @@ public class GridSystemVisual : MonoBehaviour
     {
         HideAllGridPositions();
 
+        if (!TurnSystem.Instance.IsPlayerTurn())
+            return;
+
         Unit selectedUnit = UnitActionSystem.Instance.GetSelectedUnit();
         BaseAction selectedAction = UnitActionSystem.Instance.GetSelectedAction();
 
@@ -139,20 +142,23 @@ public class GridSystemVisual : MonoBehaviour
                 break;
             case ShootAction shootAction:
                 gridVisualType = GridVisualType.Red;
-
                 ShowGridPositionRange(selectedUnit.GetGridPosition(), shootAction.GetMaxShootDistance(), GridVisualType.RedSoft);
                 break;
             case SpinAction spinAction:
                 gridVisualType = GridVisualType.Blue;
                 break;
             case GrenadeAction grenadeAction:
-                gridVisualType = GridVisualType.Yellow;
+                gridVisualType = GridVisualType.RedSoft;
                 break;
             case SwordAction swordAction:
                 gridVisualType = GridVisualType.Red;
-
                 ShowGridPositionRangeSquare(selectedUnit.GetGridPosition(), swordAction.GetMaxSwordDistance(), GridVisualType.RedSoft);
                 break;
+            case InteractAction interactAction:
+                gridVisualType = GridVisualType.Yellow;
+                break;
+
+
         }
         ShowGridPositionList(gridPositionList, gridVisualType);
     }

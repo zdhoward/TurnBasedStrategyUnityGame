@@ -33,40 +33,22 @@ public class CameraController : MonoBehaviour
 
     public void HandlePosition()
     {
-        Vector3 inputMoveDirection = Vector3.zero;
-        if (Input.GetKey(KeyCode.W))
-            inputMoveDirection.z = 1f;
-        if (Input.GetKey(KeyCode.A))
-            inputMoveDirection.x = -1f;
-        if (Input.GetKey(KeyCode.S))
-            inputMoveDirection.z = -1f;
-        if (Input.GetKey(KeyCode.D))
-            inputMoveDirection.x = 1f;
-
-        Vector3 moveVector = transform.forward * inputMoveDirection.z + transform.right * inputMoveDirection.x;
+        Vector2 inputMoveDirection = InputManager.Instance.GetCameraMoveVector();
+        Vector3 moveVector = transform.forward * inputMoveDirection.y + transform.right * inputMoveDirection.x;
         transform.position += moveVector * moveSpeed * Time.deltaTime;
     }
 
     public void HandleRotation()
     {
         Vector3 rotationVector = Vector3.zero;
-        if (Input.GetKey(KeyCode.Q))
-            rotationVector.y = 1f;
-        if (Input.GetKey(KeyCode.E))
-            rotationVector.y = -1f;
-
+        rotationVector.y = InputManager.Instance.GetCameraRotateAmount();
         transform.eulerAngles += rotationVector * rotationSpeed * Time.deltaTime;
     }
 
     public void HandleZoom()
     {
-        if (Input.mouseScrollDelta.y > 0)
-            targetFollowOffset.y -= zoomSensitivity;
-        if (Input.mouseScrollDelta.y < 0)
-            targetFollowOffset.y += zoomSensitivity;
-
+        targetFollowOffset.y += InputManager.Instance.GetCameraZoomAmount() * zoomSensitivity;
         targetFollowOffset.y = Mathf.Clamp(targetFollowOffset.y, MIN_FOLLOW_Y_OFFSET, MAX_FOLLOW_Y_OFFSET);
-
         transposer.m_FollowOffset = Vector3.Lerp(transposer.m_FollowOffset, targetFollowOffset, zoomSpeed * Time.deltaTime);
     }
 }
