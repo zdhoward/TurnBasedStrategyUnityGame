@@ -213,4 +213,44 @@ public class Pathfinding : MonoBehaviour
         FindPath(startGridPosition, endGridPosition, out int pathLength);
         return pathLength;
     }
+
+    // Return the farthest point the unit can walk to, towards an enemy
+    public GridPosition FindPartialPathToNearestEnemy(Unit unitLooking)
+    {
+        List<Unit> enemyUnitList = UnitManager.Instance.GetEnemyUnitList();
+        List<Unit> friendlyUnitList = UnitManager.Instance.GetFriendlyUnitList();
+
+        int maxMoveDistance = unitLooking.GetAction<MoveAction>().GetMaxMoveRange();
+
+        Unit closestEnemy = null;
+        float closestDistance = Mathf.Infinity;
+
+        if (TurnSystem.Instance.IsPlayerTurn())
+        {
+            foreach (Unit enemy in enemyUnitList)
+            {
+                float distance = Vector3.Distance(unitLooking.GetWorldPosition(), enemy.GetWorldPosition());
+                if (distance < closestDistance)
+                {
+                    closestEnemy = enemy;
+                    closestDistance = distance;
+                }
+            }
+        }
+        else
+        {
+            foreach (Unit friendly in friendlyUnitList)
+            {
+                float distance = Vector3.Distance(unitLooking.GetWorldPosition(), friendly.GetWorldPosition());
+                if (distance < closestDistance)
+                {
+                    closestEnemy = friendly;
+                    closestDistance = distance;
+                }
+            }
+        }
+
+        List<GridPosition> path = FindPath(unitLooking.GetGridPosition(), closestEnemy.GetGridPosition(), out int pathLength);
+        return path[maxMoveDistance - 1];
+    }
 }

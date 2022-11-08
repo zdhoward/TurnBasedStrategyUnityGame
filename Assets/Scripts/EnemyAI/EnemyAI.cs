@@ -99,6 +99,17 @@ public class EnemyAI : MonoBehaviour
             }
         }
 
+        // If best action is 0 value, no good options available, charge the player
+        if (bestEnemyAIAction != null && bestEnemyAIAction.actionValue <= 0)
+        {
+            GridPosition routeToEnemy = Pathfinding.Instance.FindPartialPathToNearestEnemy(enemyUnit);
+            bestEnemyAIAction = new EnemyAIAction
+            {
+                gridPosition = routeToEnemy,
+                actionValue = 10,
+            };
+        }
+
         if (bestEnemyAIAction != null && enemyUnit.TrySpendActionPointsToTakeAction(bestBaseAction))
         {
             bestBaseAction.TakeAction(bestEnemyAIAction.gridPosition, onEnemyAIActionComplete);

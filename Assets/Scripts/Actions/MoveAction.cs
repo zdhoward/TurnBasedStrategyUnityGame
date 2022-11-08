@@ -127,4 +127,9 @@ public class MoveAction : BaseAction
             actionValue = targetCountAtGridPosition * 10,
         };
     }
+
+    public int GetMaxMoveRange()
+    {
+        return maxMoveDistance;
+    }
 }
