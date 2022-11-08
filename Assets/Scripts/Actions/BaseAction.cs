@@ -8,6 +8,8 @@ public abstract class BaseAction : MonoBehaviour
     public static event EventHandler OnAnyActionStarted;
     public static event EventHandler OnAnyActionCompleted;
 
+    [SerializeField] protected Sprite icon;
+
     protected Unit unit;
     protected bool isActive;
 
@@ -19,6 +21,11 @@ public abstract class BaseAction : MonoBehaviour
     }
 
     public abstract string GetActionName();
+
+    public virtual Sprite GetIcon()
+    {
+        return icon;
+    }
 
     public abstract void TakeAction(GridPosition gridPosition, Action onActionComplete);
 

@@ -34,7 +34,7 @@ public class ShootAction : BaseAction
     private float stateTimer;
 
     private Unit targetUnit;
-    Vector3 targetDirection;
+    private Vector3 targetDirection;
 
     private bool canShootBullet;
 

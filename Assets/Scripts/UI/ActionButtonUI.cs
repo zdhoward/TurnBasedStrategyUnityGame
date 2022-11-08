@@ -7,6 +7,7 @@ using TMPro;
 public class ActionButtonUI : MonoBehaviour
 {
     [SerializeField] private Image selectedVisual;
+    [SerializeField] private Image iconUI;
 
     private TextMeshProUGUI textMeshPro;
     private Button button;
@@ -23,7 +24,19 @@ public class ActionButtonUI : MonoBehaviour
     {
         this.baseAction = baseAction;
 
-        textMeshPro.text = baseAction.GetActionName().ToUpper();
+        Sprite iconSprite = baseAction.GetIcon();
+
+        if (iconSprite != null)
+        {
+            iconUI.enabled = true;
+            iconUI.sprite = iconSprite;
+            textMeshPro.text = "";
+        }
+        else
+        {
+            textMeshPro.text = baseAction.GetActionName().ToUpper();
+            iconUI.enabled = false;
+        }
 
         button.onClick.AddListener(() =>
         {

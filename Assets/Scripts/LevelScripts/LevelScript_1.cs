@@ -39,6 +39,7 @@ public class LevelScript_1 : MonoBehaviour
             {
                 if (door.IsOpen())
                 {
+                    Debug.Log("Opening Room 1");
                     isRoom1Open = true;
                     HideFog(room1Fog);
                     ShowEnemies(room1Enemies);
@@ -53,6 +54,7 @@ public class LevelScript_1 : MonoBehaviour
             {
                 if (door.IsOpen())
                 {
+                    Debug.Log("Opening Room 2");
                     isRoom2Open = true;
                     HideFog(room2Fog);
                     ShowEnemies(room2Enemies);
@@ -67,6 +69,7 @@ public class LevelScript_1 : MonoBehaviour
             {
                 if (door.IsOpen())
                 {
+                    Debug.Log("Opening Room 3");
                     isRoom3Open = true;
                     HideFog(room3Fog);
                     ShowEnemies(room3Enemies);
@@ -81,6 +84,7 @@ public class LevelScript_1 : MonoBehaviour
             {
                 if (door.IsOpen())
                 {
+                    Debug.Log("Opening Room 4");
                     isRoom4Open = true;
                     HideFog(room4Fog);
                     ShowEnemies(room4Enemies);
@@ -92,7 +96,7 @@ public class LevelScript_1 : MonoBehaviour
 
     private void HideFog(GameObject[] fogs)
     {
-        foreach (GameObject fog in room1Fog)
+        foreach (GameObject fog in fogs)
         {
             fog.SetActive(false);
         }
@@ -100,7 +104,7 @@ public class LevelScript_1 : MonoBehaviour
 
     private void ShowEnemies(GameObject[] enemies)
     {
-        foreach (GameObject enemy in room1Enemies)
+        foreach (GameObject enemy in enemies)
         {
             enemy.SetActive(true);
         }

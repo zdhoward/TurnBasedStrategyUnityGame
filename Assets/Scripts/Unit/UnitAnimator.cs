@@ -24,6 +24,11 @@ public class UnitAnimator : MonoBehaviour
             shootAction.OnShoot += ShootAction_OnShoot;
         }
 
+        if (TryGetComponent<GrenadeAction>(out GrenadeAction grenadeAction))
+        {
+            grenadeAction.OnThrow += GrenadeAction_OnThrow;
+        }
+
         if (TryGetComponent<SwordAction>(out SwordAction swordAction))
         {
             swordAction.OnSwordActionStarted += SwordAction_OnSwordActionStarted;
@@ -63,6 +68,11 @@ public class UnitAnimator : MonoBehaviour
     {
         EquipSword();
         animator.SetTrigger("SwordSlash");
+    }
+
+    private void GrenadeAction_OnThrow(object sender, EventArgs e)
+    {
+        animator.SetTrigger("ThrowGrenade");
     }
 
     private void SwordAction_OnSwordActionCompleted(object sender, EventArgs e)
